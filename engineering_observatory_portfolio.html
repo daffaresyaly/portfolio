@@ -1,0 +1,1814 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daffa Ananda Pratama Resyaly — Software Engineer | Distributed Systems &amp; Full-Stack</title>
+  <meta name="description" content="Interactive engineering portfolio of Daffa Ananda Pratama Resyaly — Software Engineer specializing in high-concurrency microservices, full-stack applications, and data platforms." />
+
+  <!-- Google Fonts: Inter & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            obsidian: '#06090f',
+            surface: '#0c121e',
+            panel: '#101827',
+            emeraldGlow: '#10b981',
+            cyanGlow: '#06b6d4',
+          },
+          animation: {
+            'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'grid-drift': 'gridDrift 40s linear infinite',
+          },
+          keyframes: {
+            gridDrift: {
+              '0%': { backgroundPosition: '0px 0px' },
+              '100%': { backgroundPosition: '48px 48px' },
+            },
+          },
+        },
+      },
+    };
+  </script>
+
+  <style>
+    /* Custom Blueprint Dot-Matrix Background & Glassmorphism Utilities */
+    body {
+      background-color: #06090f;
+      color: #e2e8f0;
+      overflow-x: hidden;
+    }
+
+    .blueprint-bg {
+      background-image:
+        radial-gradient(rgba(16, 185, 129, 0.16) 1px, transparent 1px),
+        linear-gradient(to right, rgba(148, 163, 184, 0.035) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(148, 163, 184, 0.035) 1px, transparent 1px);
+      background-size: 24px 24px, 96px 96px, 96px 96px;
+    }
+
+    .bento-card {
+      background: linear-gradient(145deg, rgba(16, 24, 39, 0.78), rgba(10, 15, 26, 0.88));
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(148, 163, 184, 0.12);
+      box-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.65), inset 0 1px 0 0 rgba(255, 255, 255, 0.04);
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    .bento-card:hover {
+      border-color: rgba(16, 185, 129, 0.32);
+      box-shadow: 0 18px 40px -15px rgba(16, 185, 129, 0.12), inset 0 1px 0 0 rgba(255, 255, 255, 0.07);
+    }
+
+    .bento-card.skill-highlighted {
+      border-color: #10b981 !important;
+      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.45), 0 20px 45px -12px rgba(16, 185, 129, 0.22) !important;
+      transform: translateY(-2px);
+    }
+
+    .bento-card.skill-dimmed {
+      opacity: 0.42;
+    }
+
+    /* Executive vs Architecture View Transitions */
+    body.view-executive .arch-only {
+      display: none !important;
+    }
+    body.view-architecture .exec-only {
+      display: none !important;
+    }
+
+    /* Custom subtle scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #06090f;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+
+    /* Waterfall bar animation */
+    .waterfall-bar {
+      transition: width 0.65s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.3s ease;
+    }
+  </style>
+</head>
+
+<body class="blueprint-bg antialiased selection:bg-emerald-500/30 selection:text-emerald-200 view-architecture">
+  <!-- Ambient Radial Glows -->
+  <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
+    <div class="absolute -top-40 left-1/4 h-[460px] w-[460px] rounded-full bg-emerald-500/10 blur-[130px]"></div>
+    <div class="absolute top-1/3 -right-28 h-[420px] w-[420px] rounded-full bg-cyan-500/10 blur-[130px]"></div>
+    <div class="absolute bottom-0 left-10 h-[360px] w-[360px] rounded-full bg-emerald-600/5 blur-[120px]"></div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- ===================================================================== -->
+  <!-- 1. STICKY TOP NAVIGATION & COMMAND BAR                                -->
+  <!-- ===================================================================== -->
+  <header class="sticky top-0 z-40 border-b border-slate-800/80 bg-[#06090f]/85 backdrop-blur-xl">
+    <div class="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6 lg:px-8">
+      <!-- Monogram Logo -->
+      <a href="#overview" class="group flex items-center gap-2.5 focus:outline-none">
+        <div class="flex h-9 w-9 items-center justify-center rounded-xl border border-emerald-500/40 bg-emerald-500/10 font-mono text-xs font-bold text-emerald-400 shadow-inner transition group-hover:border-emerald-400 group-hover:bg-emerald-500/20">
+          DAR
+        </div>
+        <div class="flex flex-col">
+          <span class="font-mono text-xs font-semibold tracking-wider text-slate-100">DAR <span class="text-emerald-400">//</span> 2026</span>
+          <span class="hidden text-[10px] font-mono text-slate-400 sm:inline">SYS.OBSERVATORY</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Links -->
+      <nav aria-label="Primary Navigation" class="hidden lg:flex items-center gap-1 rounded-xl border border-slate-800/90 bg-slate-900/60 p-1">
+        <a href="#overview" class="nav-link rounded-lg px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-slate-800/80 hover:text-emerald-400">Overview</a>
+        <a href="#live-lab" class="nav-link rounded-lg px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-slate-800/80 hover:text-emerald-400 flex items-center gap-1.5">
+          <span class="h-1.5 w-1.5 rounded-full bg-cyan-400"></span>Live Lab
+        </a>
+        <a href="#experience" class="nav-link rounded-lg px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-slate-800/80 hover:text-emerald-400">Experience</a>
+        <a href="#stack" class="nav-link rounded-lg px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-slate-800/80 hover:text-emerald-400">Stack</a>
+        <a href="#education" class="nav-link rounded-lg px-3 py-1.5 text-xs font-medium text-slate-300 transition hover:bg-slate-800/80 hover:text-emerald-400">Education</a>
+      </nav>
+
+      <!-- Right Command Controls: View Mode Switch & Copy Email -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- View Toggle: Architecture vs Executive -->
+        <div class="flex items-center rounded-xl border border-slate-800 bg-slate-900/80 p-1" role="group" aria-label="Portfolio View Mode">
+          <button
+            id="btn-view-arch"
+            type="button"
+            onclick="setViewMode('architecture')"
+            class="rounded-lg px-2.5 py-1.5 font-mono text-[11px] font-medium transition bg-emerald-500/20 text-emerald-300 border border-emerald-500/40"
+            title="Show technical mechanisms, architecture notes, and full engineering details"
+          >
+            <span class="hidden sm:inline">View: </span>Architecture
+          </button>
+          <button
+            id="btn-view-exec"
+            type="button"
+            onclick="setViewMode('executive')"
+            class="rounded-lg px-2.5 py-1.5 font-mono text-[11px] font-medium text-slate-400 transition hover:text-slate-200 border border-transparent"
+            title="Show concise high-level recruiter impact summary"
+          >
+            Executive
+          </button>
+        </div>
+
+        <!-- One-Click Copy Email Button -->
+        <button
+          type="button"
+          onclick="copyEmail()"
+          class="inline-flex items-center gap-2 rounded-xl border border-cyan-500/35 bg-cyan-500/10 px-3 py-2 font-mono text-xs font-medium text-cyan-300 transition hover:border-cyan-400 hover:bg-cyan-500/20 active:scale-[0.98]"
+          title="Copy daffaresyaly@gmail.com to clipboard"
+        >
+          <svg class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+          </svg>
+          <span class="hidden md:inline">daffaresyaly@gmail.com</span>
+          <span class="md:hidden">Copy Email</span>
+        </button>
+
+        <!-- Mobile Menu Button -->
+        <button
+          id="mobile-menu-btn"
+          type="button"
+          onclick="toggleMobileMenu()"
+          aria-label="Toggle Menu"
+          class="inline-flex lg:hidden items-center justify-center rounded-xl border border-slate-800 bg-slate-900/80 p-2 text-slate-300 hover:border-slate-700 hover:text-white"
+        >
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-menu" class="hidden border-t border-slate-800/80 bg-[#080d17] px-4 py-3 lg:hidden">
+      <div class="flex flex-wrap gap-2">
+        <a href="#overview" onclick="toggleMobileMenu()" class="rounded-lg border border-slate-800 bg-slate-900/80 px-3 py-2 text-xs font-medium text-slate-200">Overview</a>
+        <a href="#live-lab" onclick="toggleMobileMenu()" class="rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-3 py-2 text-xs font-medium text-cyan-300">Live Lab</a>
+        <a href="#experience" onclick="toggleMobileMenu()" class="rounded-lg border border-slate-800 bg-slate-900/80 px-3 py-2 text-xs font-medium text-slate-200">Experience</a>
+        <a href="#stack" onclick="toggleMobileMenu()" class="rounded-lg border border-slate-800 bg-slate-900/80 px-3 py-2 text-xs font-medium text-slate-200">Stack</a>
+        <a href="#education" onclick="toggleMobileMenu()" class="rounded-lg border border-slate-800 bg-slate-900/80 px-3 py-2 text-xs font-medium text-slate-200">Education</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 sm:py-12 lg:px-8 space-y-16 sm:space-y-24">
+    <!-- ===================================================================== -->
+    <!-- 2. HERO SECTION (BENTO GRID TELEMETRY)                                -->
+    <!-- ===================================================================== -->
+    <section id="overview" class="scroll-mt-24 space-y-6">
+      <div class="grid grid-cols-1 gap-6 lg:grid-cols-12">
+        <!-- Main Identity Bento Card (8 cols) -->
+        <div class="bento-card relative overflow-hidden rounded-3xl p-6 sm:p-8 lg:col-span-8 lg:p-10 flex flex-col justify-between">
+          <!-- Subtle corner blueprint grid accent -->
+          <div class="pointer-events-none absolute right-0 top-0 h-44 w-44 rounded-bl-full bg-gradient-to-bl from-emerald-500/10 via-cyan-500/5 to-transparent"></div>
+
+          <div class="space-y-5">
+            <!-- Status Pill -->
+            <div class="inline-flex flex-wrap items-center gap-2 rounded-full border border-emerald-500/35 bg-emerald-500/10 px-3.5 py-1.5">
+              <span class="relative flex h-2.5 w-2.5">
+                <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
+              </span>
+              <span class="font-mono text-[11px] font-semibold tracking-wider text-emerald-300">
+                AVAILABLE FOR OPPORTUNITIES · JAKARTA / REMOTE
+              </span>
+            </div>
+
+            <!-- Headline & Subtitle -->
+            <div class="space-y-3">
+              <h1 class="text-3xl font-extrabold tracking-tight text-white sm:text-4xl lg:text-5xl leading-[1.12]">
+                Daffa Ananda Pratama <span class="bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 bg-clip-text text-transparent">Resyaly</span>
+              </h1>
+              <p class="text-base font-medium text-slate-200 sm:text-lg lg:text-xl max-w-3xl leading-relaxed">
+                Software Engineer building resilient full-stack applications, high-concurrency microservices, and large-scale data pipelines.
+              </p>
+            </div>
+
+            <!-- Bio (Adapts subtly between Architecture & Executive mode) -->
+            <p class="arch-only text-sm leading-relaxed text-slate-400 max-w-3xl">
+              Holding a <span class="text-slate-200 font-medium">Master of Computer Science (Data Science &amp; AI)</span> from <span class="text-emerald-300 font-medium">Bandung Institute of Technology (ITB)</span>, I architect low-latency backend services, request-coalescing concurrency layers, and end-to-end web platforms. Proven track record shipping production systems across <span class="text-slate-200">Traveloka</span>, <span class="text-slate-200">MarkAny GaneshaIT</span>, <span class="text-slate-200">Indodana</span>, <span class="text-slate-200">SMBC Indonesia</span>, and <span class="text-slate-200">SwipeRx</span>.
+            </p>
+            <p class="exec-only text-sm leading-relaxed text-slate-300 max-w-3xl">
+              <span class="text-emerald-300 font-semibold">ITB M.Sc. Computer Science</span> graduate with proven production impact across 5 leading tech &amp; financial companies (<span class="text-white font-medium">Traveloka, MarkAny GaneshaIT, Indodana, SMBC Indonesia, SwipeRx</span>). Experienced in scaling platforms serving 5M+ users, cutting external API load by 73%, and delivering full-stack products from prototype to launch.
+            </p>
+          </div>
+
+          <!-- CTA Buttons -->
+          <div class="mt-8 flex flex-wrap items-center gap-3">
+            <a
+              href="#live-lab"
+              class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-5 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-emerald-500/20 transition hover:from-emerald-400 hover:to-cyan-400 active:scale-[0.98]"
+            >
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              Explore Interactive Lab
+            </a>
+
+            <button
+              type="button"
+              onclick="copyEmail()"
+              class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-900/90 px-4 py-3 font-mono text-xs sm:text-sm font-medium text-slate-200 transition hover:border-emerald-400/60 hover:text-emerald-300 active:scale-[0.98]"
+            >
+              <svg class="h-4 w-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              Copy Email (daffaresyaly@gmail.com)
+            </button>
+
+            <a
+              href="https://www.linkedin.com/in/daffaresyaly"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-700/90 bg-slate-900/60 px-4 py-3 text-xs sm:text-sm font-medium text-slate-200 transition hover:border-cyan-400/60 hover:text-cyan-300 active:scale-[0.98]"
+            >
+              <svg class="h-4 w-4 text-cyan-400" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.88 8.56a1.68 1.68 0 0 0 1.68-1.68c0-.93-.75-1.69-1.68-1.69a1.69 1.69 0 0 0-1.69 1.69c0 .93.76 1.68 1.69 1.68m1.39 9.94v-8.37H5.5v8.37h2.77z"/>
+              </svg>
+              LinkedIn Profile
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Bento Telemetry Panel (4 cols) -->
+        <div class="bento-card rounded-3xl p-6 sm:p-7 lg:col-span-4 flex flex-col justify-between space-y-5">
+          <div class="flex items-center justify-between border-b border-slate-800/90 pb-3.5">
+            <div class="flex items-center gap-2">
+              <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+              <span class="font-mono text-xs font-semibold tracking-wider text-slate-300">NODE_TELEMETRY</span>
+            </div>
+            <span class="rounded-md border border-slate-700 bg-slate-800/80 px-2 py-0.5 font-mono text-[10px] text-cyan-300">
+              UTC+7 · JKT
+            </span>
+          </div>
+
+          <!-- Core Engineering Spec Rows -->
+          <div class="space-y-3 font-mono text-xs">
+            <div class="flex items-center justify-between rounded-xl border border-slate-800/80 bg-slate-900/60 px-3.5 py-2.5">
+              <span class="text-slate-400">ACADEMIC</span>
+              <span class="text-right font-semibold text-emerald-300">M.Sc. CS · ITB</span>
+            </div>
+            <div class="flex items-center justify-between rounded-xl border border-slate-800/80 bg-slate-900/60 px-3.5 py-2.5">
+              <span class="text-slate-400">PRIMARY_STACK</span>
+              <span class="text-right text-slate-200">Java · Python · SQL · JS</span>
+            </div>
+            <div class="flex items-center justify-between rounded-xl border border-slate-800/80 bg-slate-900/60 px-3.5 py-2.5">
+              <span class="text-slate-400">DOMAINS</span>
+              <span class="text-right text-slate-200">OTA · Fintech · Banking</span>
+            </div>
+            <div class="flex items-center justify-between rounded-xl border border-slate-800/80 bg-slate-900/60 px-3.5 py-2.5">
+              <span class="text-slate-400">INCIDENTS_SOLVED</span>
+              <span class="text-right font-semibold text-cyan-300">100+ Prod &amp; Critical</span>
+            </div>
+          </div>
+
+          <!-- Live Simulated Sparkline Bar -->
+          <div class="rounded-2xl border border-slate-800/90 bg-slate-950/70 p-3.5 space-y-2">
+            <div class="flex items-center justify-between font-mono text-[11px]">
+              <span class="text-slate-400">UPSTREAM_LOAD_PROFILE</span>
+              <span class="text-emerald-400 font-semibold">OPTIMIZED (300 RPM)</span>
+            </div>
+            <div id="hero-sparkline" class="flex h-10 items-end gap-1 pt-1" aria-hidden="true">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 Animated KPI Telemetry Cards in a Bento Row -->
+      <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <!-- KPI 1 -->
+        <div class="bento-card rounded-2xl p-5 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="font-mono text-[11px] uppercase tracking-wider text-slate-400">SCALE_REACH</span>
+            <span class="rounded-md bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] text-emerald-400 border border-emerald-500/20">SMBC ID</span>
+          </div>
+          <div class="my-3">
+            <span class="kpi-counter font-mono text-3xl sm:text-4xl font-bold text-white" data-target="5" data-prefix="" data-suffix="M+">5M+</span>
+          </div>
+          <p class="text-xs font-medium text-slate-300">Mobile Banking Users Served</p>
+          <p class="arch-only mt-1 font-mono text-[11px] text-slate-500">High-concurrency Spring Boot services</p>
+        </div>
+
+        <!-- KPI 2 -->
+        <div class="bento-card rounded-2xl p-5 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="font-mono text-[11px] uppercase tracking-wider text-slate-400">THROUGHPUT_GUARD</span>
+            <span class="rounded-md bg-cyan-500/10 px-2 py-0.5 font-mono text-[10px] text-cyan-300 border border-cyan-500/20">Traveloka</span>
+          </div>
+          <div class="my-3">
+            <span class="kpi-counter font-mono text-3xl sm:text-4xl font-bold text-emerald-400" data-target="73" data-prefix="-" data-suffix="%">-73%</span>
+          </div>
+          <p class="text-xs font-medium text-slate-300">Upstream Request Spike Reduction</p>
+          <p class="arch-only mt-1 font-mono text-[11px] text-slate-500">1,100 → 300 RPM via CompletableFuture</p>
+        </div>
+
+        <!-- KPI 3 -->
+        <div class="bento-card rounded-2xl p-5 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="font-mono text-[11px] uppercase tracking-wider text-slate-400">OBSERVABILITY_MTTD</span>
+            <span class="rounded-md bg-cyan-500/10 px-2 py-0.5 font-mono text-[10px] text-cyan-300 border border-cyan-500/20">Traveloka</span>
+          </div>
+          <div class="my-3">
+            <span class="kpi-counter font-mono text-3xl sm:text-4xl font-bold text-cyan-400" data-target="70" data-prefix="-" data-suffix="%">-70%</span>
+          </div>
+          <p class="text-xs font-medium text-slate-300">Incident Detection Time Reduction</p>
+          <p class="arch-only mt-1 font-mono text-[11px] text-slate-500">Automated alerting &amp; on-call handbook</p>
+        </div>
+
+        <!-- KPI 4 -->
+        <div class="bento-card rounded-2xl p-5 flex flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="font-mono text-[11px] uppercase tracking-wider text-slate-400">QUERY_LATENCY</span>
+            <span class="rounded-md bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] text-emerald-400 border border-emerald-500/20">SwipeRx</span>
+          </div>
+          <div class="my-3">
+            <span class="kpi-counter font-mono text-3xl sm:text-4xl font-bold text-white" data-target="50" data-prefix="-" data-suffix="%">-50%</span>
+          </div>
+          <p class="text-xs font-medium text-slate-300">Catalog Search Latency Cut</p>
+          <p class="arch-only mt-1 font-mono text-[11px] text-slate-500">N+1 query elimination &amp; DB indexing</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- 3. INTERACTIVE ENGINEERING LAB ("SEE HOW I SOLVE BOTTLENECKS")        -->
+    <!-- ===================================================================== -->
+    <section id="live-lab" class="scroll-mt-24 space-y-6">
+      <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+        <div class="space-y-1.5">
+          <div class="inline-flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-widest text-cyan-400">
+            <span>// INTERACTIVE_ENGINEERING_LAB</span>
+          </div>
+          <h2 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+            See How I Solve Production Bottlenecks
+          </h2>
+          <p class="text-sm text-slate-400 max-w-2xl">
+            Test interactive simulations of two real backend optimizations shipped in production at Traveloka and SwipeRx.
+          </p>
+        </div>
+        <span class="font-mono text-xs text-slate-400 border border-slate-800 bg-slate-900/70 rounded-lg px-3 py-1.5 self-start sm:self-auto">
+          LIVE TELEMETRY SANDBOX
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 gap-6 xl:grid-cols-12">
+        <!-- SIMULATOR A: IN-FLIGHT REQUEST DE-DUPLICATION (7 cols) -->
+        <div class="bento-card rounded-3xl p-6 sm:p-7 xl:col-span-7 flex flex-col justify-between space-y-5">
+          <div class="space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-1 font-mono text-[11px] font-semibold text-emerald-300">
+                SIMULATOR A · CONCURRENCY CONTROL
+              </span>
+              <span class="font-mono text-xs text-slate-400">Java · CompletableFuture + ConcurrentHashMap</span>
+            </div>
+            <h3 class="text-lg font-bold text-white sm:text-xl">
+              In-Flight Request De-duplication Engine
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+              When flash sales or retry storms hit ground transport search endpoints, identical concurrent queries collapse into a single shared <code class="rounded bg-slate-800 px-1.5 py-0.5 font-mono text-xs text-cyan-300">CompletableFuture</code> inside a <code class="rounded bg-slate-800 px-1.5 py-0.5 font-mono text-xs text-emerald-300">ConcurrentHashMap</code>, protecting external bus providers from 429 rate-limit cascades.
+            </p>
+          </div>
+
+          <!-- Controls Row -->
+          <div class="flex flex-col gap-3 rounded-2xl border border-slate-800/90 bg-slate-950/75 p-3.5 sm:flex-row sm:items-center sm:justify-between">
+            <!-- Toggle Switch -->
+            <div class="flex items-center gap-2">
+              <button
+                id="btn-dedup-off"
+                type="button"
+                onclick="setDedupMode(false)"
+                class="rounded-xl px-3 py-2 font-mono text-xs font-medium transition border border-transparent text-slate-400 hover:text-slate-200"
+              >
+                OFF (Raw 1,100 RPM)
+              </button>
+              <button
+                id="btn-dedup-on"
+                type="button"
+                onclick="setDedupMode(true)"
+                class="rounded-xl px-3 py-2 font-mono text-xs font-semibold transition border border-emerald-500/50 bg-emerald-500/20 text-emerald-300"
+              >
+                ON (Coalesced 300 RPM)
+              </button>
+            </div>
+
+            <!-- Trigger Surge Button -->
+            <button
+              type="button"
+              onclick="triggerTrafficSurge()"
+              class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-emerald-500 px-4 py-2.5 font-mono text-xs font-bold text-slate-950 shadow-md shadow-cyan-500/15 transition hover:from-cyan-400 hover:to-emerald-400 active:scale-[0.97]"
+            >
+              <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
+              Trigger Traffic Surge (1,100 RPM)
+            </button>
+          </div>
+
+          <!-- Interactive Pipeline Canvas Container -->
+          <div id="dedup-canvas-wrapper" class="relative w-full overflow-hidden rounded-2xl border border-slate-800 bg-[#05080f]">
+            <canvas id="dedup-canvas" class="block w-full h-[240px] sm:h-[260px]"></canvas>
+          </div>
+
+          <!-- Live Telemetry Metrics Footer -->
+          <div class="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div class="rounded-xl border border-slate-800/80 bg-slate-900/60 p-3">
+              <div class="font-mono text-[10px] text-slate-400">INCOMING_TRAFFIC</div>
+              <div id="metric-incoming-rpm" class="mt-1 font-mono text-base font-bold text-white">1,100 RPM</div>
+            </div>
+            <div class="rounded-xl border border-slate-800/80 bg-slate-900/60 p-3">
+              <div class="font-mono text-[10px] text-slate-400">UPSTREAM_PROVIDER</div>
+              <div id="metric-upstream-rpm" class="mt-1 font-mono text-base font-bold text-emerald-400">300 RPM</div>
+            </div>
+            <div class="rounded-xl border border-slate-800/80 bg-slate-900/60 p-3">
+              <div class="font-mono text-[10px] text-slate-400">LOAD_SAVED</div>
+              <div id="metric-load-saved" class="mt-1 font-mono text-base font-bold text-cyan-300">~73%</div>
+            </div>
+            <div class="rounded-xl border border-slate-800/80 bg-slate-900/60 p-3">
+              <div class="font-mono text-[10px] text-slate-400">PROVIDER_HEALTH</div>
+              <div id="metric-provider-status" class="mt-1 font-mono text-xs font-bold text-emerald-400">HEALTHY (200 OK)</div>
+            </div>
+          </div>
+
+          <!-- Architecture Code Snippet (Visible in Architecture View) -->
+          <div class="arch-only rounded-xl border border-slate-800/90 bg-slate-950/90 p-3.5 font-mono text-[11px] leading-relaxed text-slate-300 overflow-x-auto">
+            <span class="text-slate-500">// Coalesce identical concurrent route/date lookups in-flight</span><br/>
+            <span class="text-cyan-400">CompletableFuture</span>&lt;Quote&gt; future = inFlightMap.<span class="text-emerald-400">computeIfAbsent</span>(requestKey, key -&gt; {<br/>
+            &nbsp;&nbsp;<span class="text-purple-400">return</span> CompletableFuture.<span class="text-emerald-400">supplyAsync</span>(() -&gt; partnerClient.fetch(req), ioExecutor)<br/>
+            &nbsp;&nbsp;&nbsp;&nbsp;.<span class="text-emerald-400">whenComplete</span>((res, err) -&gt; inFlightMap.<span class="text-amber-300">remove</span>(key));<br/>
+            });
+          </div>
+        </div>
+
+        <!-- SIMULATOR B: QUERY OPTIMIZATION WATERFALL (5 cols) -->
+        <div class="bento-card rounded-3xl p-6 sm:p-7 xl:col-span-5 flex flex-col justify-between space-y-5">
+          <div class="space-y-2">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="rounded-lg border border-cyan-500/30 bg-cyan-500/10 px-2.5 py-1 font-mono text-[11px] font-semibold text-cyan-300">
+                SIMULATOR B · SQL &amp; INDEX TUNING
+              </span>
+              <span class="font-mono text-xs text-slate-400">SwipeRx Catalog Search</span>
+            </div>
+            <h3 class="text-lg font-bold text-white sm:text-xl">
+              N+1 Elimination &amp; Composite Indexing
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-400 leading-relaxed">
+              Refactored pharmacy catalog search endpoints serving 150,000+ health professionals by replacing sequential per-item stock/supplier lookups with eager batch joins and targeted composite indexes.
+            </p>
+          </div>
+
+          <!-- Toggle & Benchmark Controls -->
+          <div class="flex flex-wrap items-center justify-between gap-2 rounded-2xl border border-slate-800/90 bg-slate-950/75 p-3">
+            <div class="flex items-center gap-1.5">
+              <button
+                id="btn-query-legacy"
+                type="button"
+                onclick="setQueryMode('legacy')"
+                class="rounded-xl px-3 py-2 font-mono text-xs font-medium transition border border-transparent text-slate-400 hover:text-slate-200"
+              >
+                Legacy N+1 (~420ms)
+              </button>
+              <button
+                id="btn-query-optimized"
+                type="button"
+                onclick="setQueryMode('optimized')"
+                class="rounded-xl px-3 py-2 font-mono text-xs font-semibold transition border border-cyan-500/50 bg-cyan-500/20 text-cyan-300"
+              >
+                Indexed Batch (~205ms)
+              </button>
+            </div>
+
+            <button
+              type="button"
+              onclick="runQueryBenchmark()"
+              class="rounded-xl border border-slate-700 bg-slate-800/90 px-3 py-2 font-mono text-xs font-semibold text-emerald-300 transition hover:border-emerald-400 hover:bg-slate-800 active:scale-[0.97]"
+            >
+              ▶ Re-run Trace
+            </button>
+          </div>
+
+          <!-- SQL Execution Waterfall Visualization -->
+          <div class="rounded-2xl border border-slate-800 bg-[#05080f] p-4 space-y-3.5">
+            <div class="flex items-center justify-between border-b border-slate-800/80 pb-2.5 font-mono text-[11px]">
+              <span id="query-trace-label" class="text-cyan-300 font-semibold">TRACE: INDEXED_BATCH_JOIN</span>
+              <span id="query-total-badge" class="rounded bg-emerald-500/15 px-2 py-0.5 text-emerald-300 font-bold">205 ms (-51%)</span>
+            </div>
+
+            <!-- Waterfall Bars Container -->
+            <div id="query-waterfall-rows" class="space-y-2.5 font-mono text-[11px]">
+              <!-- Dynamically rendered by JS -->
+            </div>
+          </div>
+
+          <!-- Summary Comparison Footer -->
+          <div class="grid grid-cols-3 gap-2.5">
+            <div class="rounded-xl border border-slate-800/80 bg-slate-900/60 p-3">
+              <div class="font-mono text-[10px] text-slate-400">DB_ROUNDTRIPS</div>
+              <div id="metric-db-queries" class="mt-1 font-mono text-sm sm:text-base font-bold text-emerald-400">2 Queries</div>
+            </div>
+            <div class="rounded-xl border border-slate-800/80 bg-slate-900/60 p-3">
+              <div class="font-mono text-[10px] text-slate-400">P95_LATENCY</div>
+              <div id="metric-p95-latency" class="mt-1 font-mono text-sm sm:text-base font-bold text-cyan-300">205 ms</div>
+            </div>
+            <div class="rounded-xl border border-slate-800/80 bg-slate-900/60 p-3">
+              <div class="font-mono text-[10px] text-slate-400">LATENCY_DELTA</div>
+              <div id="metric-latency-delta" class="mt-1 font-mono text-sm sm:text-base font-bold text-emerald-400">-51% Cut</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- 4. EXPERIENCE TIMELINE & ARCHITECTURE CARDS (FILTERABLE)              -->
+    <!-- ===================================================================== -->
+    <section id="experience" class="scroll-mt-24 space-y-6">
+      <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div class="space-y-1.5">
+          <div class="font-mono text-xs font-semibold uppercase tracking-widest text-emerald-400">
+            // PRODUCTION_TRACK_RECORD
+          </div>
+          <h2 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+            Engineering Experience
+          </h2>
+          <p class="text-sm text-slate-400">
+            Filter by track or click any skill in the Tech Stack Matrix below to highlight matching production roles.
+          </p>
+        </div>
+
+        <!-- Role Category Filter Tabs -->
+        <div class="flex flex-wrap items-center gap-2" role="tablist" aria-label="Experience Filters">
+          <button
+            type="button"
+            data-filter="all"
+            onclick="filterExperience('all')"
+            class="exp-filter-btn rounded-xl border border-emerald-500/50 bg-emerald-500/15 px-3.5 py-2 font-mono text-xs font-semibold text-emerald-300 transition"
+          >
+            All Roles (5)
+          </button>
+          <button
+            type="button"
+            data-filter="fulltime"
+            onclick="filterExperience('fulltime')"
+            class="exp-filter-btn rounded-xl border border-slate-800 bg-slate-900/80 px-3.5 py-2 font-mono text-xs font-medium text-slate-300 transition hover:border-slate-700 hover:text-white"
+          >
+            Full-Time (2)
+          </button>
+          <button
+            type="button"
+            data-filter="fullstack"
+            onclick="filterExperience('fullstack')"
+            class="exp-filter-btn rounded-xl border border-slate-800 bg-slate-900/80 px-3.5 py-2 font-mono text-xs font-medium text-slate-300 transition hover:border-slate-700 hover:text-white"
+          >
+            Full-Stack &amp; Product (3)
+          </button>
+          <button
+            type="button"
+            data-filter="datafintech"
+            onclick="filterExperience('datafintech')"
+            class="exp-filter-btn rounded-xl border border-slate-800 bg-slate-900/80 px-3.5 py-2 font-mono text-xs font-medium text-slate-300 transition hover:border-slate-700 hover:text-white"
+          >
+            Data &amp; Fintech (3)
+          </button>
+        </div>
+      </div>
+
+      <!-- Active Skill Cross-Filter Banner (Hidden until a skill pill is clicked) -->
+      <div id="active-skill-banner" class="hidden items-center justify-between gap-3 rounded-2xl border border-emerald-500/40 bg-emerald-500/10 px-4 py-3">
+        <div class="flex items-center gap-2.5 text-xs sm:text-sm text-emerald-200">
+          <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+          <span>Highlighting roles using: <strong id="active-skill-name" class="font-mono text-white">Java</strong></span>
+        </div>
+        <button
+          type="button"
+          onclick="clearSkillFilter()"
+          class="rounded-lg border border-emerald-500/40 bg-slate-950/70 px-3 py-1 font-mono text-xs text-emerald-300 transition hover:bg-slate-900"
+        >
+          Clear Skill Filter ✕
+        </button>
+      </div>
+
+      <!-- Experience Cards List -->
+      <div id="experience-list" class="space-y-5">
+        <!-- Role 1: Traveloka -->
+        <article
+          class="exp-card bento-card rounded-3xl p-6 sm:p-8"
+          data-categories="all fulltime datafintech"
+          data-skills="Java,Spring Boot,jOOQ,Redis,PostgreSQL,REST APIs,Microservices,CI/CD,Datadog,AWS,AWS EC2,AWS S3,AWS Lambda,AWS IAM"
+        >
+          <div class="flex flex-col gap-4 border-b border-slate-800/80 pb-5 md:flex-row md:items-start md:justify-between">
+            <div class="space-y-1.5">
+              <div class="flex flex-wrap items-center gap-2.5">
+                <h3 class="text-xl font-bold text-white">Backend Engineer</h3>
+                <span class="rounded-full border border-emerald-500/35 bg-emerald-500/10 px-2.5 py-0.5 font-mono text-[11px] font-semibold text-emerald-300">
+                  Traveloka
+                </span>
+                <span class="rounded-full border border-slate-700 bg-slate-800/80 px-2.5 py-0.5 font-mono text-[10px] text-slate-300">
+                  FULL-TIME
+                </span>
+              </div>
+              <p class="font-mono text-xs text-slate-400">Tangerang, ID · Ground Transport &amp; Booking Platform</p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2 md:flex-col md:items-end">
+              <span class="rounded-xl border border-slate-700/90 bg-slate-900/90 px-3 py-1 font-mono text-xs font-semibold text-cyan-300">
+                09/2025 – 10/2026
+              </span>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="rounded-md bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-emerald-300">-73% Spike RPM</span>
+                <span class="rounded-md bg-cyan-500/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-cyan-300">-70% MTTD</span>
+                <span class="rounded-md bg-slate-800 px-2 py-0.5 font-mono text-[10px] text-slate-300">60+ Incidents</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Executive Summary (Shown in Executive Mode) -->
+          <div class="exec-only mt-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3.5 text-xs sm:text-sm text-slate-200">
+            <strong class="text-emerald-300">Executive Impact:</strong> Delivered 10+ train &amp; bus partner API integrations, cut upstream request spikes by ~73% (1,100 → 300 RPM), automated daily cross-border sales reconciliation, and reduced incident detection time by ~70%.
+          </div>
+
+          <!-- Detailed Bullets -->
+          <ul class="mt-5 space-y-2.5 text-sm leading-relaxed text-slate-300">
+            <li class="flex items-start gap-3">
+              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400"></span>
+              <span>Engineered end-to-end booking lifecycle integrations across <strong>10 APIs with Redis caching</strong> for train services, supporting a core component of the vertical's growth plan.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400"></span>
+              <span>Implemented an <strong>in-flight request de-duplication mechanism</strong> using <code class="rounded bg-slate-800/90 px-1.5 py-0.5 font-mono text-xs text-cyan-300">CompletableFuture</code> and <code class="rounded bg-slate-800/90 px-1.5 py-0.5 font-mono text-xs text-cyan-300">ConcurrentHashMap</code>, cutting request spikes to a major bus provider by <strong>~73% (from ~1,100 to ~300 RPM)</strong>.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400"></span>
+              <span>Expanded pricing-rule dimensions across core ground transport services in collaboration with Payment and Post-Booking teams.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400"></span>
+              <span>Developed an <strong>automated daily sales reconciliation engine</strong> enabling overseas inventory access for a prominent train provider.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400"></span>
+              <span>Resolved <strong>60+ on-call incidents</strong>, introduced automated alerts, and authored the on-call handbook, reducing incident detection time by <strong>~70%</strong>.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400"></span>
+              <span>Spearheaded <strong>CI/CD pipeline migrations across 6 repositories</strong> to a new governance module with error-code-tagged metrics to expedite triage.</span>
+            </li>
+          </ul>
+
+          <!-- Tech Tags -->
+          <div class="mt-5 flex flex-wrap gap-1.5 border-t border-slate-800/70 pt-4">
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">Java</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">Spring Boot</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">jOOQ</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">Redis</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">PostgreSQL</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">Microservices</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">REST APIs</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">AWS</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">CI/CD</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">Datadog</span>
+          </div>
+        </article>
+
+        <!-- Role 2: MarkAny GaneshaIT Indonesia -->
+        <article
+          class="exp-card bento-card rounded-3xl p-6 sm:p-8"
+          data-categories="all fulltime fullstack"
+          data-skills="Python,FastAPI,JavaScript,PostgreSQL,Docker,REST APIs,CI/CD,GCP,GCP Compute Engine"
+        >
+          <div class="flex flex-col gap-4 border-b border-slate-800/80 pb-5 md:flex-row md:items-start md:justify-between">
+            <div class="space-y-1.5">
+              <div class="flex flex-wrap items-center gap-2.5">
+                <h3 class="text-xl font-bold text-white">Fullstack Engineer &amp; Researcher</h3>
+                <span class="rounded-full border border-cyan-500/35 bg-cyan-500/10 px-2.5 py-0.5 font-mono text-[11px] font-semibold text-cyan-300">
+                  MarkAny GaneshaIT Indonesia
+                </span>
+                <span class="rounded-full border border-slate-700 bg-slate-800/80 px-2.5 py-0.5 font-mono text-[10px] text-slate-300">
+                  FULL-TIME
+                </span>
+              </div>
+              <p class="font-mono text-xs text-slate-400">Bandung, ID · Digital Credentials, OCR &amp; eKYC Systems</p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2 md:flex-col md:items-end">
+              <span class="rounded-xl border border-slate-700/90 bg-slate-900/90 px-3 py-1 font-mono text-xs font-semibold text-cyan-300">
+                01/2025 – 08/2025
+              </span>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="rounded-md bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-emerald-300">0 → 1 Product Launch</span>
+                <span class="rounded-md bg-cyan-500/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-cyan-300">KTP OCR + Blockchain</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="exec-only mt-4 rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-3.5 text-xs sm:text-sm text-slate-200">
+            <strong class="text-cyan-300">Executive Impact:</strong> Took eCert24 from prototype to production with live university onboarding, architected an Indonesian KTP OCR + Verifiable Credentials engine, and led full-stack eKYC compliance delivery.
+          </div>
+
+          <ul class="mt-5 space-y-2.5 text-sm leading-relaxed text-slate-300">
+            <li class="flex items-start gap-3">
+              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400"></span>
+              <span>Developed and launched <strong>eCert24</strong>, a digital certificate application, from prototype to production, onboarding <strong>two universities</strong> post-deployment.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400"></span>
+              <span>Architected an <strong>OCR engine for Indonesian KTPs</strong> integrated with blockchain-based Verifiable Credentials to streamline identity verification processing.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400"></span>
+              <span>Functioned as <strong>technical second-in-command</strong>, directing full-stack architecture and eKYC compliance implementations.</span>
+            </li>
+          </ul>
+
+          <div class="mt-5 flex flex-wrap gap-1.5 border-t border-slate-800/70 pt-4">
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">Python</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">FastAPI</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">JavaScript</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">PostgreSQL</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">Docker</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">REST APIs</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">GCP</span>
+          </div>
+        </article>
+
+        <!-- Role 3: Indodana -->
+        <article
+          class="exp-card bento-card rounded-3xl p-6 sm:p-8"
+          data-categories="all datafintech"
+          data-skills="Python,SQL,BigQuery,Apache Airflow,GCP"
+        >
+          <div class="flex flex-col gap-4 border-b border-slate-800/80 pb-5 md:flex-row md:items-start md:justify-between">
+            <div class="space-y-1.5">
+              <div class="flex flex-wrap items-center gap-2.5">
+                <h3 class="text-xl font-bold text-white">Software Engineer in Data Intern</h3>
+                <span class="rounded-full border border-emerald-500/35 bg-emerald-500/10 px-2.5 py-0.5 font-mono text-[11px] font-semibold text-emerald-300">
+                  Indodana
+                </span>
+              </div>
+              <p class="font-mono text-xs text-slate-400">Jakarta, ID · Consumer Lending &amp; PayLater Data Platform</p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2 md:flex-col md:items-end">
+              <span class="rounded-xl border border-slate-700/90 bg-slate-900/90 px-3 py-1 font-mono text-xs font-semibold text-cyan-300">
+                05/2024 – 08/2024
+              </span>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="rounded-md bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-emerald-300">1M+ Users</span>
+                <span class="rounded-md bg-cyan-500/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-cyan-300">-40% Pipeline Failures</span>
+                <span class="rounded-md bg-slate-800 px-2 py-0.5 font-mono text-[10px] text-slate-300">1.2+ TB BigQuery</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="exec-only mt-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3.5 text-xs sm:text-sm text-slate-200">
+            <strong class="text-emerald-300">Executive Impact:</strong> Cut Airflow ingestion failures by ~40% for 1M+ lending users and tuned BigQuery SQL workloads across 1.2+ TB of financial data.
+          </div>
+
+          <ul class="mt-5 space-y-2.5 text-sm leading-relaxed text-slate-300">
+            <li class="flex items-start gap-3">
+              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400"></span>
+              <span>Engineered <strong>Apache Airflow</strong> data ingestion pipelines for lending services supporting <strong>1M+ users</strong>, achieving a <strong>~40% reduction in pipeline failures</strong>.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400"></span>
+              <span>Optimized <strong>BigQuery SQL</strong> queries across <strong>1.2+ TB</strong> of financial data, lowering query execution overhead and improving reporting performance.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400"></span>
+              <span>Constructed Redash dashboards and monitoring scripts for auditing data pipelines and resolving critical data integrity issues.</span>
+            </li>
+          </ul>
+
+          <div class="mt-5 flex flex-wrap gap-1.5 border-t border-slate-800/70 pt-4">
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">Python</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">SQL</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">BigQuery</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">Apache Airflow</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">GCP</span>
+          </div>
+        </article>
+
+        <!-- Role 4: SMBC Indonesia -->
+        <article
+          class="exp-card bento-card rounded-3xl p-6 sm:p-8"
+          data-categories="all fullstack datafintech"
+          data-skills="Java,Spring Boot,PostgreSQL,REST APIs,Microservices,TDD"
+        >
+          <div class="flex flex-col gap-4 border-b border-slate-800/80 pb-5 md:flex-row md:items-start md:justify-between">
+            <div class="space-y-1.5">
+              <div class="flex flex-wrap items-center gap-2.5">
+                <h3 class="text-xl font-bold text-white">Fullstack Engineer Intern</h3>
+                <span class="rounded-full border border-cyan-500/35 bg-cyan-500/10 px-2.5 py-0.5 font-mono text-[11px] font-semibold text-cyan-300">
+                  SMBC Indonesia
+                </span>
+              </div>
+              <p class="font-mono text-xs text-slate-400">Jakarta, ID · Digital Mobile Banking Platform (Jenius / SMBC)</p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2 md:flex-col md:items-end">
+              <span class="rounded-xl border border-slate-700/90 bg-slate-900/90 px-3 py-1 font-mono text-xs font-semibold text-cyan-300">
+                02/2023 – 02/2024
+              </span>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="rounded-md bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-emerald-300">5M+ Banking Users</span>
+                <span class="rounded-md bg-cyan-500/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-cyan-300">-30% Prod Bugs</span>
+                <span class="rounded-md bg-slate-800 px-2 py-0.5 font-mono text-[10px] text-slate-300">+25% Velocity</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="exec-only mt-4 rounded-xl border border-cyan-500/20 bg-cyan-500/5 p-3.5 text-xs sm:text-sm text-slate-200">
+            <strong class="text-cyan-300">Executive Impact:</strong> Built Java Spring Boot services for 5M+ mobile banking customers, cut post-deployment bugs by ~30% via TDD, and resolved 40+ critical production defects.
+          </div>
+
+          <ul class="mt-5 space-y-2.5 text-sm leading-relaxed text-slate-300">
+            <li class="flex items-start gap-3">
+              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400"></span>
+              <span>Developed <strong>Java Spring Boot</strong> services for a mobile banking platform serving <strong>5M+ users</strong>, handling high-concurrency digital transactions.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400"></span>
+              <span>Implemented <strong>Test-Driven Development (TDD)</strong> using JUnit and Mockito, reducing post-deployment bugs by <strong>~30%</strong> and boosting sprint velocity by <strong>~25%</strong>.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-cyan-400"></span>
+              <span>Maintained core application functionality by systematically resolving <strong>40+ critical technical bugs</strong> across multiple sprint cycles.</span>
+            </li>
+          </ul>
+
+          <div class="mt-5 flex flex-wrap gap-1.5 border-t border-slate-800/70 pt-4">
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">Java</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">Spring Boot</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">Microservices</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">REST APIs</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">PostgreSQL</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">TDD</span>
+          </div>
+        </article>
+
+        <!-- Role 5: SwipeRx -->
+        <article
+          class="exp-card bento-card rounded-3xl p-6 sm:p-8"
+          data-categories="all fullstack"
+          data-skills="PHP,JavaScript,SQL,PostgreSQL,REST APIs"
+        >
+          <div class="flex flex-col gap-4 border-b border-slate-800/80 pb-5 md:flex-row md:items-start md:justify-between">
+            <div class="space-y-1.5">
+              <div class="flex flex-wrap items-center gap-2.5">
+                <h3 class="text-xl font-bold text-white">PHP Fullstack Developer Intern</h3>
+                <span class="rounded-full border border-emerald-500/35 bg-emerald-500/10 px-2.5 py-0.5 font-mono text-[11px] font-semibold text-emerald-300">
+                  SwipeRx
+                </span>
+              </div>
+              <p class="font-mono text-xs text-slate-400">Jakarta, ID · B2B Pharmacy Inventory &amp; Procurement Network</p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2 md:flex-col md:items-end">
+              <span class="rounded-xl border border-slate-700/90 bg-slate-900/90 px-3 py-1 font-mono text-xs font-semibold text-cyan-300">
+                07/2022 – 10/2022
+              </span>
+              <div class="flex flex-wrap gap-1.5">
+                <span class="rounded-md bg-emerald-500/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-emerald-300">150K+ Professionals</span>
+                <span class="rounded-md bg-cyan-500/10 px-2 py-0.5 font-mono text-[10px] font-semibold text-cyan-300">-50% Search Latency</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="exec-only mt-4 rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-3.5 text-xs sm:text-sm text-slate-200">
+            <strong class="text-emerald-300">Executive Impact:</strong> Shipped full-stack inventory &amp; procurement features for 150,000+ pharmacy professionals and cut catalog search response times by ~50% via N+1 query elimination.
+          </div>
+
+          <ul class="mt-5 space-y-2.5 text-sm leading-relaxed text-slate-300">
+            <li class="flex items-start gap-3">
+              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400"></span>
+              <span>Delivered full-stack features, from database migrations to UI views, for pharmacy inventory and procurement modules serving <strong>150,000+ health professionals</strong>.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400"></span>
+              <span>Optimized search queries and refactored logic by <strong>eliminating N+1 query patterns and adding indexes</strong>, cutting catalog search response times by <strong>~50%</strong>.</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-emerald-400"></span>
+              <span>Implemented centralized input sanitization and strict API schema validation to enforce payload integrity for batch procurement submissions.</span>
+            </li>
+          </ul>
+
+          <div class="mt-5 flex flex-wrap gap-1.5 border-t border-slate-800/70 pt-4">
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">PHP</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">JavaScript</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">SQL</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">PostgreSQL</span>
+            <span class="role-tag rounded-lg border border-slate-800 bg-slate-900/90 px-2.5 py-1 font-mono text-[11px] text-slate-300">REST APIs</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- 5. INTERACTIVE TECH STACK MATRIX                                      -->
+    <!-- ===================================================================== -->
+    <section id="stack" class="scroll-mt-24 space-y-6">
+      <div class="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+        <div class="space-y-1.5">
+          <div class="font-mono text-xs font-semibold uppercase tracking-widest text-cyan-400">
+            // INTERACTIVE_TECH_MATRIX
+          </div>
+          <h2 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+            Technical Stack &amp; Capabilities
+          </h2>
+          <p class="text-sm text-slate-400">
+            Click any technology pill to cross-highlight where it was deployed in production above.
+          </p>
+        </div>
+
+        <button
+          id="btn-clear-skill"
+          type="button"
+          onclick="clearSkillFilter()"
+          class="hidden self-start sm:self-auto rounded-xl border border-emerald-500/40 bg-emerald-500/10 px-3.5 py-2 font-mono text-xs font-medium text-emerald-300 transition hover:bg-emerald-500/20"
+        >
+          Reset Selection
+        </button>
+      </div>
+
+      <div class="grid grid-cols-1 gap-5 md:grid-cols-2">
+        <!-- Category 1: Languages -->
+        <div class="bento-card rounded-3xl p-6 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+            <h3 class="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400">01 · Languages</h3>
+            <span class="font-mono text-[11px] text-slate-500">5 CORE</span>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" onclick="toggleSkillFilter('Java')" data-skill="Java" class="skill-pill rounded-xl border border-slate-700/90 bg-slate-900/90 px-3.5 py-2 font-mono text-xs font-medium text-slate-200 transition hover:border-emerald-400 hover:text-emerald-300">Java</button>
+            <button type="button" onclick="toggleSkillFilter('Python')" data-skill="Python" class="skill-pill rounded-xl border border-slate-700/90 bg-slate-900/90 px-3.5 py-2 font-mono text-xs font-medium text-slate-200 transition hover:border-emerald-400 hover:text-emerald-300">Python</button>
+            <button type="button" onclick="toggleSkillFilter('SQL')" data-skill="SQL" class="skill-pill rounded-xl border border-slate-700/90 bg-slate-900/90 px-3.5 py-2 font-mono text-xs font-medium text-slate-200 transition hover:border-emerald-400 hover:text-emerald-300">SQL</button>
+            <button type="button" onclick="toggleSkillFilter('PHP')" data-skill="PHP" class="skill-pill rounded-xl border border-slate-700/90 bg-slate-900/90 px-3.5 py-2 font-mono text-xs font-medium text-slate-200 transition hover:border-emerald-400 hover:text-emerald-300">PHP</button>
+            <button type="button" onclick="toggleSkillFilter('JavaScript')" data-skill="JavaScript" class="skill-pill rounded-xl border border-slate-700/90 bg-slate-900/90 px-3.5 py-2 font-mono text-xs font-medium text-slate-200 transition hover:border-emerald-400 hover:text-emerald-300">JavaScript</button>
+          </div>
+        </div>
+
+        <!-- Category 2: Frameworks & APIs -->
+        <div class="bento-card rounded-3xl p-6 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+            <h3 class="font-mono text-xs font-bold uppercase tracking-wider text-cyan-400">02 · Frameworks &amp; APIs</h3>
+            <span class="font-mono text-[11px] text-slate-500">5 CORE</span>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" onclick="toggleSkillFilter('Spring Boot')" data-skill="Spring Boot" class="skill-pill rounded-xl border border-slate-700/90 bg-slate-900/90 px-3.5 py-2 font-mono text-xs font-medium text-slate-200 transition hover:border-cyan-400 hover:text-cyan-300">Spring Boot</button>
+            <button type="button" onclick="toggleSkillFilter('FastAPI')" data-skill="FastAPI" class="skill-pill rounded-xl border border-slate-700/90 bg-slate-900/90 px-3.5 py-2 font-mono text-xs font-medium text-slate-200 transition hover:border-cyan-400 hover:text-cyan-300">FastAPI</button>
+            <button type="button" onclick="toggleSkillFilter('jOOQ')" data-skill="jOOQ" class="skill-pill rounded-xl border border-slate-700/90 bg-slate-900/90 px-3.5 py-2 font-mono text-xs font-medium text-slate-200 transition hover:border-cyan-400 hover:text-cyan-300">jOOQ</button>
+            <button type="button" onclick="toggleSkillFilter('gRPC')" data-skill="gRPC" class="skill-pill rounded-xl border border-slate-700/90 bg-slate-900/90 px-3.5 py-2 font-mono text-xs font-medium text-slate-200 transition hover:border-cyan-400 hover:text-cyan-300">gRPC</button>
+            <button type="button" onclick="toggleSkillFilter('REST APIs')" data-skill="REST APIs" class="skill-pill rounded-xl border border-slate-700/90 bg-slate-900/90 px-3.5 py-2 font-mono text-xs font-medium text-slate-200 transition hover:border-cyan-400 hover:text-cyan-300">REST APIs</button>
+          </div>
+        </div>
+
+        <!-- Category 3: Data & Messaging -->
+        <div class="bento-card rounded-3xl p-6 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+            <h3 class="font-mono text-xs font-bold uppercase tracking-wider text-emerald-400">03 · Data &amp; Messaging</h3>
+            <span class="font-mono text-[11px] text-slate-500">4 CORE</span>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" onclick="toggleSkillFilter('PostgreSQL')" data-skill="PostgreSQL" class="skill-pill rounded-xl border border-slate-700/90 bg-slate-900/90 px-3.5 py-2 font-mono text-xs font-medium text-slate-200 transition hover:border-emerald-400 hover:text-emerald-300">PostgreSQL</button>
+            <button type="button" onclick="toggleSkillFilter('Redis')" data-skill="Redis" class="skill-pill rounded-xl border border-slate-700/90 bg-slate-900/90 px-3.5 py-2 font-mono text-xs font-medium text-slate-200 transition hover:border-emerald-400 hover:text-emerald-300">Redis</button>
+            <button type="button" onclick="toggleSkillFilter('BigQuery')" data-skill="BigQuery" class="skill-pill rounded-xl border border-slate-700/90 bg-slate-900/90 px-3.5 py-2 font-mono text-xs font-medium text-slate-200 transition hover:border-emerald-400 hover:text-emerald-300">BigQuery</button>
+            <button type="button" onclick="toggleSkillFilter('Apache Airflow')" data-skill="Apache Airflow" class="skill-pill rounded-xl border border-slate-700/90 bg-slate-900/90 px-3.5 py-2 font-mono text-xs font-medium text-slate-200 transition hover:border-emerald-400 hover:text-emerald-300">Apache Airflow</button>
+          </div>
+        </div>
+
+        <!-- Category 4: Cloud, DevOps & Practices -->
+        <div class="bento-card rounded-3xl p-6 space-y-4">
+          <div class="flex items-center justify-between border-b border-slate-800/80 pb-3">
+            <h3 class="font-mono text-xs font-bold uppercase tracking-wider text-cyan-400">04 · Cloud, DevOps &amp; Practices</h3>
+            <span class="font-mono text-[11px] text-slate-500">8 CORE</span>
+          </div>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" onclick="toggleSkillFilter('AWS')" data-skill="AWS" class="skill-pill rounded-xl border border-slate-700/90 bg-slate-900/90 px-3.5 py-2 font-mono text-xs font-medium text-slate-200 transition hover:border-cyan-400 hover:text-cyan-300">AWS (EC2/S3/Lambda/IAM)</button>
+            <button type="button" onclick="toggleSkillFilter('GCP')" data-skill="GCP" class="skill-pill rounded-xl border border-slate-700/90 bg-slate-900/90 px-3.5 py-2 font-mono text-xs font-medium text-slate-200 transition hover:border-cyan-400 hover:text-cyan-300">GCP Compute Engine</button>
+            <button type="button" onclick="toggleSkillFilter('Docker')" data-skill="Docker" class="skill-pill rounded-xl border border-slate-700/90 bg-slate-900/90 px-3.5 py-2 font-mono text-xs font-medium text-slate-200 transition hover:border-cyan-400 hover:text-cyan-300">Docker</button>
+            <button type="button" onclick="toggleSkillFilter('Kubernetes')" data-skill="Kubernetes" class="skill-pill rounded-xl border border-slate-700/90 bg-slate-900/90 px-3.5 py-2 font-mono text-xs font-medium text-slate-200 transition hover:border-cyan-400 hover:text-cyan-300">Kubernetes</button>
+            <button type="button" onclick="toggleSkillFilter('CI/CD')" data-skill="CI/CD" class="skill-pill rounded-xl border border-slate-700/90 bg-slate-900/90 px-3.5 py-2 font-mono text-xs font-medium text-slate-200 transition hover:border-cyan-400 hover:text-cyan-300">CI/CD</button>
+            <button type="button" onclick="toggleSkillFilter('Datadog')" data-skill="Datadog" class="skill-pill rounded-xl border border-slate-700/90 bg-slate-900/90 px-3.5 py-2 font-mono text-xs font-medium text-slate-200 transition hover:border-cyan-400 hover:text-cyan-300">Datadog</button>
+            <button type="button" onclick="toggleSkillFilter('Microservices')" data-skill="Microservices" class="skill-pill rounded-xl border border-slate-700/90 bg-slate-900/90 px-3.5 py-2 font-mono text-xs font-medium text-slate-200 transition hover:border-cyan-400 hover:text-cyan-300">Microservices</button>
+            <button type="button" onclick="toggleSkillFilter('TDD')" data-skill="TDD" class="skill-pill rounded-xl border border-slate-700/90 bg-slate-900/90 px-3.5 py-2 font-mono text-xs font-medium text-slate-200 transition hover:border-cyan-400 hover:text-cyan-300">TDD</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- 6. EDUCATION & ACADEMIC LEADERSHIP (ITB)                              -->
+    <!-- ===================================================================== -->
+    <section id="education" class="scroll-mt-24 space-y-6">
+      <div class="space-y-1.5">
+        <div class="font-mono text-xs font-semibold uppercase tracking-widest text-emerald-400">
+          // ACADEMIC_CREDENTIALS_&_LEADERSHIP
+        </div>
+        <h2 class="text-2xl font-bold tracking-tight text-white sm:text-3xl">
+          Education — Bandung Institute of Technology (ITB)
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <!-- Master's Degree Card -->
+        <div class="bento-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between space-y-5">
+          <div class="space-y-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="rounded-lg border border-emerald-500/35 bg-emerald-500/10 px-2.5 py-1 font-mono text-[11px] font-semibold text-emerald-300">
+                MASTER'S DEGREE · M.SC.
+              </span>
+              <span class="font-mono text-xs font-semibold text-cyan-300">08/2023 – 01/2025</span>
+            </div>
+            <h3 class="text-lg sm:text-xl font-bold text-white leading-snug">
+              Master of Computer Science — Data Science and Artificial Intelligence
+            </h3>
+            <p class="font-mono text-xs text-slate-400">Bandung Institute of Technology (ITB) · Bandung, Indonesia</p>
+          </div>
+
+          <div class="space-y-3 border-t border-slate-800/80 pt-4">
+            <div class="rounded-2xl border border-slate-800/90 bg-slate-900/60 p-4 space-y-1.5">
+              <div class="font-mono text-[11px] font-semibold uppercase tracking-wider text-emerald-400">
+                Academic Leadership
+              </div>
+              <p class="text-sm text-slate-200 leading-relaxed">
+                Laboratory Assistant of <strong>Programming for Data Analytics</strong> &amp; Teaching Assistant of <strong>Intelligent System</strong>.
+              </p>
+            </div>
+            <p class="arch-only font-mono text-xs text-slate-400 leading-relaxed">
+              Focus Areas: Big Data Systems, Machine Learning, Data Modelling &amp; Management, Business Intelligence &amp; Analytics.
+            </p>
+          </div>
+        </div>
+
+        <!-- Bachelor's Degree Card -->
+        <div class="bento-card rounded-3xl p-6 sm:p-8 flex flex-col justify-between space-y-5">
+          <div class="space-y-2.5">
+            <div class="flex flex-wrap items-center justify-between gap-2">
+              <span class="rounded-lg border border-cyan-500/35 bg-cyan-500/10 px-2.5 py-1 font-mono text-[11px] font-semibold text-cyan-300">
+                BACHELOR'S DEGREE · B.SC.
+              </span>
+              <span class="font-mono text-xs font-semibold text-cyan-300">08/2019 – 08/2023</span>
+            </div>
+            <h3 class="text-lg sm:text-xl font-bold text-white leading-snug">
+              Bachelor of Computer Science
+            </h3>
+            <p class="font-mono text-xs text-slate-400">Bandung Institute of Technology (ITB) · Bandung, Indonesia</p>
+          </div>
+
+          <div class="space-y-3 border-t border-slate-800/80 pt-4">
+            <div class="rounded-2xl border border-slate-800/90 bg-slate-900/60 p-4 space-y-1.5">
+              <div class="font-mono text-[11px] font-semibold uppercase tracking-wider text-cyan-400">
+                Academic Leadership
+              </div>
+              <p class="text-sm text-slate-200 leading-relaxed">
+                Teaching Assistant of <strong>Computational Engineering Laboratory</strong>.
+              </p>
+            </div>
+            <p class="arch-only font-mono text-xs text-slate-400 leading-relaxed">
+              Core Foundations: Algorithms &amp; Data Structures, Object-Oriented Programming, Databases, Software Engineering, Artificial Intelligence.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================================================================== -->
+    <!-- 7. FOOTER & DIRECT CONTACT CARD                                       -->
+    <!-- ===================================================================== -->
+    <footer class="pt-4 pb-8">
+      <div class="bento-card relative overflow-hidden rounded-3xl p-7 sm:p-10">
+        <div class="pointer-events-none absolute -right-16 -bottom-16 h-64 w-64 rounded-full bg-gradient-to-tl from-emerald-500/15 via-cyan-500/10 to-transparent blur-2xl"></div>
+
+        <div class="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div class="space-y-2.5 max-w-2xl">
+            <div class="inline-flex items-center gap-2 font-mono text-xs text-emerald-400">
+              <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+              <span>READY TO DEPLOY · JAKARTA, INDONESIA (WIB / UTC+7)</span>
+            </div>
+            <h2 class="text-2xl font-bold text-white sm:text-3xl">
+              Let’s build resilient systems together.
+            </h2>
+            <p class="text-sm text-slate-400 leading-relaxed">
+              Open to mid-level Backend, Full-Stack, and Platform/Solutions Engineering opportunities in Jakarta, hybrid setups, or remote international engineering teams.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onclick="copyEmail()"
+              class="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-5 py-3 font-mono text-xs sm:text-sm font-bold text-slate-950 shadow-lg shadow-emerald-500/20 transition hover:from-emerald-400 hover:to-cyan-400 active:scale-[0.98]"
+            >
+              <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+              </svg>
+              daffaresyaly@gmail.com
+            </button>
+
+            <a
+              href="https://www.linkedin.com/in/daffaresyaly"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="inline-flex items-center justify-center gap-2 rounded-xl border border-slate-700 bg-slate-900/90 px-5 py-3 text-xs sm:text-sm font-semibold text-slate-200 transition hover:border-cyan-400/60 hover:text-cyan-300 active:scale-[0.98]"
+            >
+              LinkedIn ↗
+            </a>
+          </div>
+        </div>
+
+        <div class="mt-8 flex flex-col gap-2 border-t border-slate-800/80 pt-5 font-mono text-[11px] text-slate-500 sm:flex-row sm:items-center sm:justify-between">
+          <span>© 2026 Daffa Ananda Pratama Resyaly · Jakarta, Indonesia</span>
+          <span>DAR // 2026 · Built with Telemetry &amp; Precision</span>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- JAVASCRIPT: TELEMETRY SIMULATORS, FILTERS, VIEW TOGGLES & CLIPBOARD   -->
+  <!-- ===================================================================== -->
+  <script>
+    // =========================================================================
+    // 1. CLIPBOARD COPY & CUSTOM TOAST NOTIFICATION (NO alert()/confirm())
+    // =========================================================================
+    function showToast(message, accent = 'emerald') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const borderClass = accent === 'cyan' ? 'border-cyan-400/50 text-cyan-200' : 'border-emerald-400/50 text-emerald-200';
+      const dotClass = accent === 'cyan' ? 'bg-cyan-400' : 'bg-emerald-400';
+
+      toast.className = `pointer-events-auto flex items-center gap-2.5 rounded-xl border ${borderClass} bg-slate-900/95 px-4 py-3 font-mono text-xs shadow-2xl backdrop-blur-md transition-all duration-300 translate-y-2 opacity-0`;
+      toast.innerHTML = `
+        <span class="h-2 w-2 rounded-full ${dotClass}"></span>
+        <span>${message}</span>
+      `;
+      container.appendChild(toast);
+
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-2', 'opacity-0');
+        setTimeout(() => toast.remove(), 300);
+      }, 2800);
+    }
+
+    function copyEmail() {
+      const email = 'daffaresyaly@gmail.com';
+      try {
+        const tempInput = document.createElement('textarea');
+        tempInput.value = email;
+        tempInput.style.position = 'fixed';
+        tempInput.style.left = '-9999px';
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        showToast(`Copied ${email} to clipboard`, 'emerald');
+      } catch (err) {
+        showToast(`Email: ${email}`, 'cyan');
+      }
+    }
+
+    // =========================================================================
+    // 2. MOBILE MENU & EXECUTIVE / ARCHITECTURE VIEW TOGGLE
+    // =========================================================================
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      menu.classList.toggle('hidden');
+    }
+
+    function setViewMode(mode) {
+      const body = document.body;
+      const btnArch = document.getElementById('btn-view-arch');
+      const btnExec = document.getElementById('btn-view-exec');
+
+      if (mode === 'executive') {
+        body.classList.remove('view-architecture');
+        body.classList.add('view-executive');
+
+        btnExec.className = 'rounded-lg px-2.5 py-1.5 font-mono text-[11px] font-medium transition bg-cyan-500/20 text-cyan-300 border border-cyan-500/40';
+        btnArch.className = 'rounded-lg px-2.5 py-1.5 font-mono text-[11px] font-medium text-slate-400 transition hover:text-slate-200 border border-transparent';
+        showToast('Switched to Executive Recruiter View', 'cyan');
+      } else {
+        body.classList.remove('view-executive');
+        body.classList.add('view-architecture');
+
+        btnArch.className = 'rounded-lg px-2.5 py-1.5 font-mono text-[11px] font-medium transition bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
+        btnExec.className = 'rounded-lg px-2.5 py-1.5 font-mono text-[11px] font-medium text-slate-400 transition hover:text-slate-200 border border-transparent';
+        showToast('Switched to Deep Architecture View', 'emerald');
+      }
+    }
+
+    // =========================================================================
+    // 3. HERO SPARKLINE & KPI COUNTER ANIMATION
+    // =========================================================================
+    function initHeroSparkline() {
+      const container = document.getElementById('hero-sparkline');
+      if (!container) return;
+      const heights = [38, 45, 42, 60, 88, 95, 44, 36, 34, 40, 35, 32, 38, 34, 30, 35, 33, 31];
+      container.innerHTML = heights
+        .map((h, idx) => {
+          const isSpike = idx === 4 || idx === 5;
+          const color = isSpike ? 'bg-amber-400/70' : 'bg-emerald-400/80';
+          return `<div class="flex-1 rounded-t ${color} transition-all duration-500" style="height: ${h}%"></div>`;
+        })
+        .join('');
+    }
+
+    function animateKPIs() {
+      const counters = document.querySelectorAll('.kpi-counter');
+      counters.forEach((el) => {
+        const target = parseInt(el.getAttribute('data-target'), 10);
+        const prefix = el.getAttribute('data-prefix') || '';
+        const suffix = el.getAttribute('data-suffix') || '';
+        const duration = 1100;
+        const startTime = performance.now();
+
+        function step(now) {
+          const progress = Math.min((now - startTime) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          const current = Math.round(target * eased);
+          el.textContent = `${prefix}${current}${suffix}`;
+          if (progress < 1) {
+            requestAnimationFrame(step);
+          }
+        }
+        requestAnimationFrame(step);
+      });
+    }
+
+    // =========================================================================
+    // 4. SIMULATOR A: IN-FLIGHT REQUEST DE-DUPLICATION CANVAS ENGINE
+    // =========================================================================
+    const dedupState = {
+      enabled: true,
+      particles: [],
+      upstreamStress: 0,
+      surgeBoost: 0,
+      lastSpawn: 0,
+      width: 600,
+      height: 250,
+    };
+
+    function setDedupMode(isEnabled) {
+      dedupState.enabled = isEnabled;
+      const btnOff = document.getElementById('btn-dedup-off');
+      const btnOn = document.getElementById('btn-dedup-on');
+      const upstreamRpmEl = document.getElementById('metric-upstream-rpm');
+      const loadSavedEl = document.getElementById('metric-load-saved');
+      const statusEl = document.getElementById('metric-provider-status');
+
+      if (isEnabled) {
+        btnOn.className = 'rounded-xl px-3 py-2 font-mono text-xs font-semibold transition border border-emerald-500/50 bg-emerald-500/20 text-emerald-300';
+        btnOff.className = 'rounded-xl px-3 py-2 font-mono text-xs font-medium transition border border-transparent text-slate-400 hover:text-slate-200';
+        upstreamRpmEl.textContent = '300 RPM';
+        upstreamRpmEl.className = 'mt-1 font-mono text-base font-bold text-emerald-400';
+        loadSavedEl.textContent = '~73%';
+        loadSavedEl.className = 'mt-1 font-mono text-base font-bold text-cyan-300';
+        statusEl.textContent = 'HEALTHY (200 OK)';
+        statusEl.className = 'mt-1 font-mono text-xs font-bold text-emerald-400';
+      } else {
+        btnOff.className = 'rounded-xl px-3 py-2 font-mono text-xs font-semibold transition border border-rose-500/50 bg-rose-500/20 text-rose-300';
+        btnOn.className = 'rounded-xl px-3 py-2 font-mono text-xs font-medium transition border border-transparent text-slate-400 hover:text-slate-200';
+        upstreamRpmEl.textContent = '1,100 RPM';
+        upstreamRpmEl.className = 'mt-1 font-mono text-base font-bold text-rose-400';
+        loadSavedEl.textContent = '0% (Raw)';
+        loadSavedEl.className = 'mt-1 font-mono text-base font-bold text-amber-400';
+        statusEl.textContent = 'RATE-LIMITED (429)';
+        statusEl.className = 'mt-1 font-mono text-xs font-bold text-rose-400';
+      }
+    }
+
+    function spawnRequestWave(count, isBurst = false) {
+      const lanes = [-46, -23, 0, 23, 46];
+      const routeKeys = ['CGK-BDG', 'JKT-SBY', 'JKT-YIA'];
+      const chosenKey = routeKeys[Math.floor(Math.random() * routeKeys.length)];
+
+      for (let i = 0; i < count; i++) {
+        const laneOffset = lanes[i % lanes.length] + (Math.random() * 10 - 5);
+        // When dedup is ON, only ~27% of particles pass through gateway to upstream (representing 1,100 -> 300 RPM)
+        const isLeader = i === 0 || (!dedupState.enabled) || (i % 4 === 0 && !isBurst);
+        dedupState.particles.push({
+          progress: -Math.random() * (isBurst ? 0.28 : 0.12),
+          speed: (isBurst ? 0.011 : 0.008) + Math.random() * 0.002,
+          laneY: laneOffset,
+          isLeader: dedupState.enabled ? (i === 0) : true,
+          key: chosenKey,
+          coalesced: false,
+          hitUpstream: false,
+        });
+      }
+    }
+
+    function triggerTrafficSurge() {
+      dedupState.surgeBoost = 1.0;
+      spawnRequestWave(14, true);
+      if (dedupState.enabled) {
+        showToast('1,100 RPM surge coalesced into 300 RPM upstream!', 'emerald');
+      } else {
+        showToast('Warning: Unfiltered 1,100 RPM spike hitting upstream!', 'cyan');
+      }
+    }
+
+    function resizeDedupCanvas() {
+      const wrapper = document.getElementById('dedup-canvas-wrapper');
+      const canvas = document.getElementById('dedup-canvas');
+      if (!wrapper || !canvas) return;
+      const rect = wrapper.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      dedupState.width = Math.max(rect.width, 300);
+      dedupState.height = window.innerWidth < 640 ? 240 : 260;
+
+      canvas.width = dedupState.width * dpr;
+      canvas.height = dedupState.height * dpr;
+      const ctx = canvas.getContext('2d');
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function renderDedupLoop(timestamp) {
+      const canvas = document.getElementById('dedup-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      const W = dedupState.width;
+      const H = dedupState.height;
+      const midY = H / 2;
+
+      // Ambient steady traffic spawn
+      if (timestamp - dedupState.lastSpawn > 750) {
+        spawnRequestWave(4, false);
+        dedupState.lastSpawn = timestamp;
+      }
+
+      // Decay stress & surge
+      dedupState.surgeBoost = Math.max(0, dedupState.surgeBoost - 0.015);
+      dedupState.upstreamStress = Math.max(0, dedupState.upstreamStress - 0.02);
+
+      // Clear background
+      ctx.clearRect(0, 0, W, H);
+
+      // Node X positions (responsive percentages)
+      const clientX = Math.max(46, W * 0.13);
+      const gatewayX = W * 0.50;
+      const providerX = Math.min(W - 46, W * 0.87);
+
+      // Draw connecting pipeline tracks
+      ctx.lineWidth = 2;
+      // Left segment (Clients -> Gateway)
+      ctx.strokeStyle = 'rgba(148, 163, 184, 0.22)';
+      [-36, 0, 36].forEach((offset) => {
+        ctx.beginPath();
+        ctx.moveTo(clientX + 26, midY + offset * 0.5);
+        ctx.bezierCurveTo(
+          (clientX + gatewayX) / 2,
+          midY + offset,
+          (clientX + gatewayX) / 2,
+          midY + offset * 0.3,
+          gatewayX - 34,
+          midY
+        );
+        ctx.stroke();
+      });
+
+      // Right segment (Gateway -> Upstream Provider)
+      ctx.strokeStyle = dedupState.enabled
+        ? 'rgba(16, 185, 129, 0.35)'
+        : 'rgba(244, 63, 94, 0.42)';
+      ctx.beginPath();
+      ctx.moveTo(gatewayX + 34, midY);
+      ctx.lineTo(providerX - 28, midY);
+      ctx.stroke();
+
+      // Update & draw request particles
+      const alive = [];
+      for (const p of dedupState.particles) {
+        p.progress += p.speed;
+        if (p.progress < 0) {
+          alive.push(p);
+          continue;
+        }
+
+        // Phase 1: Client -> Gateway (0.0 to 0.5)
+        if (p.progress <= 0.5) {
+          const t = p.progress / 0.5;
+          const x = clientX + (gatewayX - clientX) * t;
+          const y = midY + p.laneY * (1 - t * 0.85);
+
+          ctx.beginPath();
+          ctx.arc(x, y, 4.2, 0, Math.PI * 2);
+          ctx.fillStyle = '#38bdf8';
+          ctx.fill();
+          alive.push(p);
+        } else if (p.progress <= 1.0) {
+          // At gateway barrier: if dedup is ON and particle is duplicate, coalesce visually
+          if (dedupState.enabled && !p.isLeader) {
+            if (!p.coalesced) {
+              p.coalesced = true;
+              // Draw subtle emerald ring pulse at gateway
+              ctx.beginPath();
+              ctx.arc(gatewayX, midY, 26, 0, Math.PI * 2);
+              ctx.strokeStyle = 'rgba(16, 185, 129, 0.35)';
+              ctx.lineWidth = 1.5;
+              ctx.stroke();
+            }
+            continue;
+          }
+
+          // Phase 2: Gateway -> Upstream Provider (0.5 to 1.0)
+          const t = (p.progress - 0.5) / 0.5;
+          const x = gatewayX + (providerX - gatewayX) * t;
+          const spreadY = dedupState.enabled ? 0 : p.laneY * 0.45;
+          const y = midY + spreadY;
+
+          ctx.beginPath();
+          ctx.arc(x, y, dedupState.enabled ? 5.5 : 4.5, 0, Math.PI * 2);
+          ctx.fillStyle = dedupState.enabled ? '#10b981' : '#f43f5e';
+          ctx.fill();
+
+          if (p.progress >= 0.96 && !p.hitUpstream) {
+            p.hitUpstream = true;
+            if (!dedupState.enabled) {
+              dedupState.upstreamStress = Math.min(1, dedupState.upstreamStress + 0.25);
+            }
+          }
+          alive.push(p);
+        }
+      }
+      dedupState.particles = alive;
+
+      // Helper to draw rounded node boxes
+      function drawNode(cx, cy, w, h, borderColor, bgColor, title, subtitle, titleColor) {
+        const rx = cx - w / 2;
+        const ry = cy - h / 2;
+        const r = 12;
+        ctx.beginPath();
+        ctx.roundRect(rx, ry, w, h, r);
+        ctx.fillStyle = bgColor;
+        ctx.fill();
+        ctx.lineWidth = 1.5;
+        ctx.strokeStyle = borderColor;
+        ctx.stroke();
+
+        ctx.fillStyle = titleColor;
+        ctx.font = '600 11px "JetBrains Mono", monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(title, cx, cy - 4);
+
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '400 9.5px "JetBrains Mono", monospace';
+        ctx.fillText(subtitle, cx, cy + 12);
+      }
+
+      const isCompact = W < 440;
+      // Node 1: Incoming Clients
+      drawNode(
+        clientX,
+        midY,
+        isCompact ? 76 : 94,
+        54,
+        'rgba(56, 189, 248, 0.5)',
+        '#0c1526',
+        isCompact ? 'CLIENTS' : 'BOOKING API',
+        '1,100 RPM',
+        '#7dd3fc'
+      );
+
+      // Node 2: Deduplication Gateway
+      drawNode(
+        gatewayX,
+        midY,
+        isCompact ? 96 : 128,
+        62,
+        dedupState.enabled ? '#10b981' : 'rgba(148, 163, 184, 0.4)',
+        dedupState.enabled ? 'rgba(16, 185, 129, 0.14)' : '#0f172a',
+        dedupState.enabled ? 'DEDUP MAP' : 'BYPASSED',
+        dedupState.enabled ? 'Coalescing' : 'Pass-Through',
+        dedupState.enabled ? '#6ee7b7' : '#cbd5e1'
+      );
+
+      // Node 3: Upstream Bus Provider
+      const stressed = !dedupState.enabled;
+      drawNode(
+        providerX,
+        midY,
+        isCompact ? 78 : 98,
+        54,
+        stressed ? '#f43f5e' : 'rgba(16, 185, 129, 0.55)',
+        stressed ? 'rgba(244, 63, 94, 0.16)' : '#0c1a18',
+        isCompact ? 'PROVIDER' : 'BUS PARTNER',
+        stressed ? '1,100 RPM!' : '300 RPM OK',
+        stressed ? '#fda4af' : '#6ee7b7'
+      );
+
+      requestAnimationFrame(renderDedupLoop);
+    }
+
+    // =========================================================================
+    // 5. SIMULATOR B: SQL QUERY OPTIMIZATION WATERFALL
+    // =========================================================================
+    let currentQueryMode = 'optimized';
+
+    const queryTraces = {
+      legacy: {
+        label: 'TRACE: LEGACY_N_PLUS_1_PATTERN',
+        badge: '420 ms (Baseline)',
+        badgeClass: 'rounded bg-rose-500/15 px-2 py-0.5 text-rose-300 font-bold',
+        queries: '25 Queries',
+        queriesClass: 'mt-1 font-mono text-sm sm:text-base font-bold text-rose-400',
+        p95: '420 ms',
+        p95Class: 'mt-1 font-mono text-sm sm:text-base font-bold text-rose-400',
+        delta: '0% (Slow)',
+        deltaClass: 'mt-1 font-mono text-sm sm:text-base font-bold text-amber-400',
+        bars: [
+          { name: 'SELECT * FROM catalog WHERE name LIKE ...', ms: 65, offset: 0, width: 16, color: 'bg-amber-400' },
+          { name: 'SELECT stock FROM inventory WHERE id IN (1..6)', ms: 90, offset: 16, width: 22, color: 'bg-rose-500' },
+          { name: 'SELECT stock FROM inventory WHERE id IN (7..12)', ms: 88, offset: 38, width: 21, color: 'bg-rose-500' },
+          { name: 'SELECT supplier FROM vendors WHERE id IN (13..18)', ms: 92, offset: 59, width: 22, color: 'bg-rose-500' },
+          { name: 'SELECT price_tier FROM pricing WHERE id IN (19..24)', ms: 85, offset: 81, width: 19, color: 'bg-rose-400' },
+        ],
+      },
+      optimized: {
+        label: 'TRACE: INDEXED_BATCH_JOIN',
+        badge: '205 ms (-51%)',
+        badgeClass: 'rounded bg-emerald-500/15 px-2 py-0.5 text-emerald-300 font-bold',
+        queries: '2 Queries',
+        queriesClass: 'mt-1 font-mono text-sm sm:text-base font-bold text-emerald-400',
+        p95: '205 ms',
+        p95Class: 'mt-1 font-mono text-sm sm:text-base font-bold text-cyan-300',
+        delta: '-51% Cut',
+        deltaClass: 'mt-1 font-mono text-sm sm:text-base font-bold text-emerald-400',
+        bars: [
+          { name: 'IDX_SCAN: catalog_search_idx (Primary Match)', ms: 82, offset: 0, width: 20, color: 'bg-cyan-400' },
+          { name: 'BATCH_JOIN: inventory + vendors + pricing (1 query)', ms: 123, offset: 20, width: 29, color: 'bg-emerald-400' },
+        ],
+      },
+    };
+
+    function setQueryMode(mode) {
+      currentQueryMode = mode;
+      const btnLegacy = document.getElementById('btn-query-legacy');
+      const btnOpt = document.getElementById('btn-query-optimized');
+
+      if (mode === 'legacy') {
+        btnLegacy.className = 'rounded-xl px-3 py-2 font-mono text-xs font-semibold transition border border-rose-500/50 bg-rose-500/20 text-rose-300';
+        btnOpt.className = 'rounded-xl px-3 py-2 font-mono text-xs font-medium transition border border-transparent text-slate-400 hover:text-slate-200';
+      } else {
+        btnOpt.className = 'rounded-xl px-3 py-2 font-mono text-xs font-semibold transition border border-cyan-500/50 bg-cyan-500/20 text-cyan-300';
+        btnLegacy.className = 'rounded-xl px-3 py-2 font-mono text-xs font-medium transition border border-transparent text-slate-400 hover:text-slate-200';
+      }
+
+      renderQueryWaterfall();
+    }
+
+    function renderQueryWaterfall() {
+      const data = queryTraces[currentQueryMode];
+      document.getElementById('query-trace-label').textContent = data.label;
+      const badge = document.getElementById('query-total-badge');
+      badge.textContent = data.badge;
+      badge.className = data.badgeClass;
+
+      const qEl = document.getElementById('metric-db-queries');
+      qEl.textContent = data.queries;
+      qEl.className = data.queriesClass;
+
+      const p95El = document.getElementById('metric-p95-latency');
+      p95El.textContent = data.p95;
+      p95El.className = data.p95Class;
+
+      const deltaEl = document.getElementById('metric-latency-delta');
+      deltaEl.textContent = data.delta;
+      deltaEl.className = data.deltaClass;
+
+      const rowsContainer = document.getElementById('query-waterfall-rows');
+      rowsContainer.innerHTML = data.bars
+        .map(
+          (bar) => `
+          <div class="space-y-1">
+            <div class="flex items-center justify-between text-[10px] text-slate-400">
+              <span class="truncate pr-2">${bar.name}</span>
+              <span class="shrink-0 text-slate-300">${bar.ms}ms</span>
+            </div>
+            <div class="h-2.5 w-full rounded-full bg-slate-900 overflow-hidden relative">
+              <div
+                class="waterfall-bar h-full rounded-full ${bar.color}"
+                style="margin-left: ${bar.offset}%; width: 0%;"
+                data-target-width="${bar.width}%"
+              ></div>
+            </div>
+          </div>
+        `
+        )
+        .join('');
+
+      requestAnimationFrame(() => {
+        rowsContainer.querySelectorAll('.waterfall-bar').forEach((barEl) => {
+          barEl.style.width = barEl.getAttribute('data-target-width');
+        });
+      });
+    }
+
+    function runQueryBenchmark() {
+      renderQueryWaterfall();
+      showToast(
+        currentQueryMode === 'optimized'
+          ? 'Indexed batch query executed in 205ms (-51%)'
+          : 'Legacy N+1 waterfall executed in 420ms (25 queries)',
+        currentQueryMode === 'optimized' ? 'emerald' : 'cyan'
+      );
+    }
+
+    // =========================================================================
+    // 6. EXPERIENCE CATEGORY FILTERS & INTERACTIVE SKILL CROSS-HIGHLIGHTING
+    // =========================================================================
+    let activeCategory = 'all';
+    let activeSkill = null;
+
+    function filterExperience(category) {
+      activeCategory = category;
+
+      // Update filter button styles
+      document.querySelectorAll('.exp-filter-btn').forEach((btn) => {
+        const isMatch = btn.getAttribute('data-filter') === category;
+        btn.className = isMatch
+          ? 'exp-filter-btn rounded-xl border border-emerald-500/50 bg-emerald-500/15 px-3.5 py-2 font-mono text-xs font-semibold text-emerald-300 transition'
+          : 'exp-filter-btn rounded-xl border border-slate-800 bg-slate-900/80 px-3.5 py-2 font-mono text-xs font-medium text-slate-300 transition hover:border-slate-700 hover:text-white';
+      });
+
+      applyExperienceVisibility();
+    }
+
+    function toggleSkillFilter(skill) {
+      if (activeSkill === skill) {
+        clearSkillFilter();
+        return;
+      }
+
+      activeSkill = skill;
+
+      // Highlight selected pill in Tech Stack Matrix
+      document.querySelectorAll('.skill-pill').forEach((pill) => {
+        const isSelected = pill.getAttribute('data-skill') === skill;
+        if (isSelected) {
+          pill.classList.add('border-emerald-400', 'bg-emerald-500/20', 'text-emerald-200', 'shadow-md', 'shadow-emerald-500/15');
+        } else {
+          pill.classList.remove('border-emerald-400', 'bg-emerald-500/20', 'text-emerald-200', 'shadow-md', 'shadow-emerald-500/15');
+        }
+      });
+
+      // Show banners & clear buttons
+      const banner = document.getElementById('active-skill-banner');
+      banner.classList.remove('hidden');
+      banner.classList.add('flex');
+      document.getElementById('active-skill-name').textContent = skill;
+      document.getElementById('btn-clear-skill').classList.remove('hidden');
+
+      // Reset category to All so user sees every role using that skill
+      if (activeCategory !== 'all') {
+        filterExperience('all');
+      } else {
+        applyExperienceVisibility();
+      }
+
+      // Smoothly scroll up to experience section so user immediately sees highlighted roles
+      const expSection = document.getElementById('experience');
+      if (expSection) {
+        expSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      showToast(`Highlighting roles using ${skill}`, 'emerald');
+    }
+
+    function clearSkillFilter() {
+      activeSkill = null;
+      document.querySelectorAll('.skill-pill').forEach((pill) => {
+        pill.classList.remove('border-emerald-400', 'bg-emerald-500/20', 'text-emerald-200', 'shadow-md', 'shadow-emerald-500/15');
+      });
+
+      const banner = document.getElementById('active-skill-banner');
+      banner.classList.add('hidden');
+      banner.classList.remove('flex');
+      document.getElementById('btn-clear-skill').classList.add('hidden');
+
+      applyExperienceVisibility();
+    }
+
+    function applyExperienceVisibility() {
+      const cards = document.querySelectorAll('.exp-card');
+      cards.forEach((card) => {
+        const categories = (card.getAttribute('data-categories') || '').split(' ');
+        const skills = (card.getAttribute('data-skills') || '').split(',').map((s) => s.trim());
+
+        const matchesCategory = activeCategory === 'all' || categories.includes(activeCategory);
+        if (!matchesCategory) {
+          card.classList.add('hidden');
+        } else {
+          card.classList.remove('hidden');
+        }
+
+        // Apply skill highlight / dim states
+        card.classList.remove('skill-highlighted', 'skill-dimmed');
+        card.querySelectorAll('.role-tag').forEach((tag) => {
+          tag.classList.remove('border-emerald-400', 'bg-emerald-500/20', 'text-emerald-200');
+        });
+
+        if (activeSkill) {
+          const hasSkill = skills.includes(activeSkill);
+          if (hasSkill) {
+            card.classList.add('skill-highlighted');
+            card.querySelectorAll('.role-tag').forEach((tag) => {
+              if (tag.textContent.trim() === activeSkill) {
+                tag.classList.add('border-emerald-400', 'bg-emerald-500/20', 'text-emerald-200');
+              }
+            });
+          } else {
+            card.classList.add('skill-dimmed');
+          }
+        }
+      });
+    }
+
+    // =========================================================================
+    // 7. INITIALIZE ON WINDOW LOAD
+    // =========================================================================
+    window.addEventListener('load', () => {
+      initHeroSparkline();
+      animateKPIs();
+      resizeDedupCanvas();
+      setDedupMode(true);
+      renderQueryWaterfall();
+      requestAnimationFrame(renderDedupLoop);
+    });
+
+    window.addEventListener('resize', () => {
+      resizeDedupCanvas();
+    });
+  </script>
+</body>
+</html>
